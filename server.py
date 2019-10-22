@@ -1,20 +1,17 @@
-from flask import Flask, render_template
-from datetime import datetime
-
-app = Flask(__name__)
+from flask import Flask
+import views
 
 
-@app.route("/")
-def home_page():
-    today = datetime.today()
-    day_name = today.strftime("%A")
-    return render_template("home.html", day=day_name)
+def create_app():
+    app = Flask(__name__)
 
+    app.add_url_rule("/", view_func=views.home_page)
+    app.add_url_rule("/movies", view_func=views.movies_page)
 
-@app.route("/movies")
-def movies_page():
-    return render_template("movies.html")
+    return app
 
 
 if __name__ == "__main__":
+    app = create_app()
+
     app.run()
