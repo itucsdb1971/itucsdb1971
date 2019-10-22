@@ -11,6 +11,9 @@ class Database:
         self.movies[self._last_movie_key] = movie
         return self._last_movie_key
 
+    def update_movie(self, movie_key, movie):
+        self.movies[movie_key] = movie
+
     def delete_movie(self, movie_key):
         if movie_key in self.movies:
             del self.movies[movie_key]
