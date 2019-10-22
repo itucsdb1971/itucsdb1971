@@ -56,6 +56,8 @@ def movie_add_page():
 def movie_edit_page(movie_key):
     db = current_app.config["db"]
     movie = db.get_movie(movie_key)
+    if movie is None:
+        abort(404)
     form = MovieEditForm()
     if form.validate_on_submit():
         title = form.data["title"]

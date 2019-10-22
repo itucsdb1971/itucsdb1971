@@ -1,12 +1,13 @@
-import os
 import sys
-
 import psycopg2 as dbapi2
 
 
 INIT_STATEMENTS = [
-    "CREATE TABLE IF NOT EXISTS DUMMY (NUM INTEGER)",
-    "INSERT INTO DUMMY VALUES (42)",
+    "CREATE TABLE IF NOT EXISTS movie ("
+    "id SERIAL PRIMARY KEY,"
+    "title VARCHAR(80) NOT NULL,"
+    "yr INTEGER"
+    ")",
 ]
 
 
@@ -18,9 +19,8 @@ def initialize(url):
         cursor.close()
 
 
-if __name__ == "__main__":
-    url = os.getenv("DATABASE_URL")
+def run(url):
     if url is None:
-        print("Usage: DATABASE_URL=url python dbinit.py", file=sys.stderr)
+        print("Missing: DATABASE_URL", file=sys.stderr)
         sys.exit(1)
     initialize(url)

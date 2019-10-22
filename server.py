@@ -1,5 +1,5 @@
 from flask import Flask
-import views
+import views, dbinit
 from database import Database
 from flask_login import LoginManager
 from user import get_user
@@ -38,7 +38,8 @@ def create_app():
     lm.init_app(app)
     lm.login_view = "login_page"
 
-    db = Database()
+    dbinit.run(app.config["DATABASE_URL"])
+    db = Database(app.config["DATABASE_URL"])
     app.config["db"] = db
 
     return app
