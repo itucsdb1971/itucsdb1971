@@ -1,10 +1,24 @@
 from flask import Flask
 import views
+from database import Database
+from movie import Movie
 
-app = Flask(__name__)
 
-app.add_url_rule("/", view_func=views.home_page)
-app.add_url_rule("/movies", view_func=views.movies_page)
+def create_app():
+    app = Flask(__name__)
+
+    app.add_url_rule("/", view_func=views.home_page)
+    app.add_url_rule("/movies", view_func=views.movies_page)
+    app.add_url_rule("/movies/<int:movie_key>", view_func=views.movie_page)
+
+    db = Database()
+    db.add_movie(Movie("Slaughterhouse-Five", year=1972))
+    db.add_movie(Movie("The Shining"))
+    app.config["db"] = db
+
+    return app
+
 
 if __name__ == "__main__":
-    app.run()
+    app = create_app()
+    app.run(host="0.0.0.0")
