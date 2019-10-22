@@ -1,6 +1,7 @@
 from flask import render_template, current_app, abort, request, redirect, url_for
 from datetime import datetime
 from movie import Movie
+from forms import MovieEditForm
 
 
 def home_page():
@@ -85,26 +86,28 @@ def movie_edit_page(movie_key):
         return redirect(url_for("movie_page", movie_key=movie_key))
 
 
-def validate_movie_form(form):
-    form.data = {}
-    form.errors = {}
+def movie_add_page():
+    form = MovieEditForm()
+    if form.validate_on_submit():
+        title = form.data["title"]
+        year = form.data["year"]
+        movie = Movie(title, year=year)
+        db = current_app.config["db"]
+        movie_key = db.add_movie(movie)
+        return redirect(url_for("movie_page", movie_key=movie_key))
+    return render_template("movie_edit.html", form=form)
 
-    form_title = form.get("title", "").strip()
-    if len(form_title) == 0:
-        form.errors["title"] = "Title can not be blank."
-    else:
-        form.data["title"] = form_title
 
-    form_year = form.get("year")
-    if not form_year:
-        form.data["year"] = None
-    elif not form_year.isdigit():
-        form.errors["year"] = "Year must consist of digits only."
-    else:
-        year = int(form_year)
-        if (year < 1887) or (year > datetime.now().year):
-            form.errors["year"] = "Year not in valid range."
-        else:
-            form.data["year"] = year
-
-    return len(form.errors) == 0
+def movie_edit_page(movie_key):
+    db = current_app.config["db"]
+    movie = db.get_movie(movie_key)
+    form = MovieEditForm()
+    if form.validate_on_submit():
+        title = form.data["title"]
+        year = form.data["year"]
+        movie = Movie(title, year=year)
+        db.update_movie(movie_key, movie)
+        return redirect(url_for("movie_page", movie_key=movie_key))
+    form.title.data = movie.title
+    form.year.data = movie.year if movie.year else ""
+    return render_template("movie_edit.html", form=form)

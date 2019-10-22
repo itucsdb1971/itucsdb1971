@@ -4,31 +4,30 @@
     <h1 class="title">Edit movie</h1>
 
     <form action="" method="post" name="movie_edit">
+      {{ form.csrf_token }}
+
       <div class="field">
         <label for="title" class="label">Title</label>
         <div class="control">
-          <input type="text" name="title" class="input" required="required"
-                 value="{{ values['title'] }}"/>
+          {{ form.title(required=True, autofocus=True, class='input') }}
         </div>
-        {% if 'title' in values.errors %}
+        {% for error in form.title.errors %}
         <p class="help has-background-warning">
-            {{ values.errors['title'] }}
+            {{ error }}
         </p>
-        {% endif %}
+        {% endfor %}
       </div>
 
       <div class="field">
         <label for="year" class="label">Year</label>
         <div class="control">
-          <input type="number" name="year" class="input"
-                 min="{{ min_year }}" max="{{ max_year }}"
-                 value="{{ values['year'] }}"/>
+          {{ form.year(class='input') }}
         </div>
-        {% if 'year' in values.errors %}
+        {% for error in form.year.errors %}
         <p class="help has-background-warning">
-            {{ values.errors['year'] }}
+            {{ error }}
         </p>
-        {% endif %}
+        {% endfor %}
       </div>
 
       <div class="field is-grouped">
