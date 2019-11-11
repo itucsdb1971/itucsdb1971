@@ -13,3 +13,11 @@ class TaskEditForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
 
     description = StringField("Description", validators=[Optional()])
+
+
+class ListEditForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
+
+    description = StringField("Description", validators=[Optional()])
+
+

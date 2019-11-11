@@ -1,7 +1,8 @@
 from flask import render_template, current_app, abort, request, redirect, url_for, flash
 from datetime import datetime
 from task import Task
-from forms import TaskEditForm, LoginForm
+from list import List
+from forms import TaskEditForm, ListEditForm, LoginForm
 from flask_login import login_user, logout_user, current_user, login_required
 from user import get_user
 from passlib.hash import pbkdf2_sha256 as hasher
@@ -68,6 +69,90 @@ def task_edit_page(task_key):
         return redirect(url_for("task_page", task_key=task_key))
     form.name.data = task.name
     form.description.data = task.description if task.description else ""
+    return render_template("task_edit.html", form=form)
+
+
+def lists_page():
+    db = current_app.config["db"]
+    if request.method == "GET":
+        lists = db.get_lists()
+        return render_template("lists.html", lists=sorted(lists))
+    else:
+        if not current_user.is_admin:
+            abort(401)
+        form_list_keys = request.form.getlist("list_keys")
+        for form_list_key in form_list_keys:
+            db.delete_list(int(form_list_key))
+        flash("%(num)d lists deleted." % {"num": len(form_list_keys)})
+        return redirect(url_for("lists_page"))
+
+
+def list_page(list_key):
+    db = current_app.config["db"]
+    if request.method == "GET":
+        list = db.get_list(list_key)
+        if list is None:
+            abort(404)
+        tasks = db.get_tasks_with_list(list_key)
+        return render_template("list.html", list=list, tasks=sorted(tasks))
+    else:
+        if not current_user.is_admin:
+            abort(401)
+        form_task_keys = request.form.getlist("task_keys")
+        for form_task_key in form_task_keys:
+            db.delete_task(int(form_task_key))
+        flash("%(num)d tasks deleted." % {"num": len(form_task_keys)})
+        return redirect(url_for("list_page", list_key=list_key))
+
+
+@login_required
+def list_add_page():
+    if not current_user.is_admin:
+        abort(401)
+    form = ListEditForm()
+    if form.validate_on_submit():
+        name = form.data["name"]
+        description = form.data["description"]
+        list = List(name, description=description)
+        db = current_app.config["db"]
+        list_key = db.add_list(list)
+        flash("List added.")
+        return redirect(url_for("list_page", list_key=list_key))
+    return render_template("list_edit.html", form=form)
+
+
+@login_required
+def list_edit_page(list_key):
+    db = current_app.config["db"]
+    list = db.get_list(list_key)
+    if list is None:
+        abort(404)
+    form = ListEditForm()
+    if form.validate_on_submit():
+        name = form.data["name"]
+        description = form.data["description"]
+        list = List(name, description=description)
+        db.update_list(list_key, list)
+        flash("List data updated.")
+        return redirect(url_for("list_page", list_key=list_key))
+    form.name.data = list.name
+    form.description.data = list.description if list.description else ""
+    return render_template("list_edit.html", form=form)
+
+
+@login_required
+def list_add_task_page(list_key):
+    if not current_user.is_admin:
+        abort(401)
+    form = TaskEditForm()
+    if form.validate_on_submit():
+        name = form.data["name"]
+        description = form.data["description"]
+        task = Task(name, description=description, list_id=list_key)
+        db = current_app.config["db"]
+        task_key = db.add_task_with_list(task)
+        flash("Task added.")
+        return redirect(url_for("list_page", list_key=list_key))
     return render_template("task_edit.html", form=form)
 
 

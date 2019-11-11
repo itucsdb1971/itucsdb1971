@@ -34,6 +34,19 @@ def create_app():
     app.add_url_rule(
         "/tasks/<int:task_key>/edit", view_func=views.task_edit_page, methods=["GET", "POST"]
     )
+    app.add_url_rule(
+        "/lists", view_func=views.lists_page, methods=["GET", "POST"]
+    )
+    app.add_url_rule("/lists/<int:list_key>", view_func=views.list_page)
+    app.add_url_rule(
+        "/new-list", view_func=views.list_add_page, methods=["GET", "POST"]
+    )
+    app.add_url_rule(
+        "/lists/<int:list_key>/edit", view_func=views.list_edit_page, methods=["GET", "POST"]
+    )
+    app.add_url_rule(
+        "/lists/<int:list_key>/new-task", view_func=views.list_add_task_page, methods=["GET", "POST"]
+    )
 
     lm.init_app(app)
     lm.login_view = "login_page"

@@ -1,11 +1,40 @@
 {% extends "layout.html" %}
-{% block title %}My Task{% endblock %}
+{% block title %}List{% endblock %}
 {% block content %}
-    <h1 class="title">My Tasks</h1>
+    <h1 class="title">List</h1>
+
+    <table class="table">
+      <tr>
+        <th>Name:</th>
+        <td>{{ list.name }}</td>
+      </tr>
+      {% if list.description %}
+      <tr>
+        <th>Description:</th>
+        <td>{{ list.description }}</td>
+      </tr>
+      {% endif %}
+    </table>
+
+    {% if current_user.is_authenticated %}
+    <div class="field is-grouped">
+      <div class="control">
+        <a class="button is-primary is-outlined is-small"
+           href="{{ request.path }}/edit">Edit list</a>
+      </div>
+      <div class="control">
+        <a class="button is-link is-small"
+           href="{{ request.path }}/new-task">Add task</a>
+      </div>
+    </div>
+    {% endif %}
 
     {% if tasks %}
     <form action="" method="post" name="task_list">
       <table class="table is-striped is-fullwidth">
+        <tr>
+          <th>Tasks:</th>
+        </tr>
         {% for task_key, task in tasks %}
         <tr>
           <td>
@@ -26,7 +55,7 @@
       {% if current_user.is_admin %}
       <div class="field is-grouped">
         <div class="control">
-          <button class="button is-danger is-small">Delete</button>
+          <button class="button is-danger is-small">Delete tasks</button>
         </div>
       </div>
       {% endif %}

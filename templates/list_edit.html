@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Edit list{% endblock %}
+{% block content %}
+    <h1 class="title">Edit list</h1>
+
+    <form action="" method="post" name="list_edit">
+      {{ form.csrf_token }}
+
+      <div class="field">
+        <label for="name" class="label">Name</label>
+        <div class="control">
+          {{ form.name(required=True, autofocus=True, class='input') }}
+        </div>
+        {% for error in form.name.errors %}
+        <p class="help has-background-warning">
+            {{ error }}
+        </p>
+        {% endfor %}
+      </div>
+
+      <div class="field">
+        <label for="description" class="label">Description</label>
+        <div class="control">
+          {{ form.description(class='input') }}
+        </div>
+        {% for error in form.description.errors %}
+        <p class="help has-background-warning">
+            {{ error }}
+        </p>
+        {% endfor %}
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-primary is-small">Save</button>
+        </div>
+      </div>
+    </form>
+{% endblock %}

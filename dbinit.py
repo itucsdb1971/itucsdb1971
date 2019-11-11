@@ -3,10 +3,16 @@ import psycopg2 as dbapi2
 
 
 INIT_STATEMENTS = [
-    "CREATE TABLE IF NOT EXISTS tasks ("
+    "CREATE TABLE IF NOT EXISTS lists ("
     "id SERIAL PRIMARY KEY,"
     "name VARCHAR(80) NOT NULL,"
     "description VARCHAR(80)"
+    ")",
+    "CREATE TABLE IF NOT EXISTS tasks ("
+    "id SERIAL PRIMARY KEY,"
+    "name VARCHAR(80) NOT NULL,"
+    "description VARCHAR(80),"
+    "list_id INTEGER REFERENCES lists(id) ON DELETE CASCADE"
     ")",
 ]
 

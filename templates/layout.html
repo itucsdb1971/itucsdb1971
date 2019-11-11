@@ -7,7 +7,7 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css"/>
     <link rel="stylesheet"
-          href="{{ url_for('static', filename='mytasks.css') }}"/>
+          href="{{ url_for('static', filename='custom.css') }}"/>
   </head>
   <body>
     <header>
@@ -17,7 +17,15 @@
             <a class="button is-link" href="{{ url_for('home_page') }}">Home</a>
           </span>
           <span class="navbar-item">
-            <a class="button is-link" href="{{ url_for('tasks_page') }}">List tasks</a>
+            <a class="button is-link" href="{{ url_for('lists_page') }}">My lists</a>
+          </span>
+          {% if current_user.is_admin %}
+          <span class="navbar-item">
+            <a class="button is-link" href="{{ url_for('list_add_page') }}">Add list</a>
+          </span>
+          {% endif %}
+          <span class="navbar-item">
+            <a class="button is-link" href="{{ url_for('tasks_page') }}">My tasks</a>
           </span>
           {% if current_user.is_admin %}
           <span class="navbar-item">
