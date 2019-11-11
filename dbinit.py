@@ -3,10 +3,10 @@ import psycopg2 as dbapi2
 
 
 INIT_STATEMENTS = [
-    "CREATE TABLE IF NOT EXISTS movie ("
+    "CREATE TABLE IF NOT EXISTS tasks ("
     "id SERIAL PRIMARY KEY,"
-    "title VARCHAR(80) NOT NULL,"
-    "yr INTEGER"
+    "name VARCHAR(80) NOT NULL,"
+    "description VARCHAR(80)"
     ")",
 ]
 

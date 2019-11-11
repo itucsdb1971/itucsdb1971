@@ -1,9 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired, NumberRange, Optional
-from wtforms_components import IntegerField
-
-from datetime import datetime
+from wtforms.validators import DataRequired, Optional
 
 
 class LoginForm(FlaskForm):
@@ -12,13 +9,7 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
 
 
-class MovieEditForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired()])
+class TaskEditForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
 
-    year = IntegerField(
-        "Year",
-        validators=[
-            Optional(),
-            NumberRange(min=1887, max=datetime.now().year),
-        ],
-    )
+    description = StringField("Description", validators=[Optional()])

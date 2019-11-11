@@ -1,17 +1,17 @@
 {% extends "layout.html" %}
-{% block title %}Edit movie{% endblock %}
+{% block title %}Edit task{% endblock %}
 {% block content %}
-    <h1 class="title">Edit movie</h1>
+    <h1 class="title">Edit task</h1>
 
-    <form action="" method="post" name="movie_edit">
+    <form action="" method="post" name="task_edit">
       {{ form.csrf_token }}
 
       <div class="field">
-        <label for="title" class="label">Title</label>
+        <label for="name" class="label">Name</label>
         <div class="control">
-          {{ form.title(required=True, autofocus=True, class='input') }}
+          {{ form.name(required=True, autofocus=True, class='input') }}
         </div>
-        {% for error in form.title.errors %}
+        {% for error in form.name.errors %}
         <p class="help has-background-warning">
             {{ error }}
         </p>
@@ -19,11 +19,11 @@
       </div>
 
       <div class="field">
-        <label for="year" class="label">Year</label>
+        <label for="description" class="label">Description</label>
         <div class="control">
-          {{ form.year(class='input') }}
+          {{ form.description(class='input') }}
         </div>
-        {% for error in form.year.errors %}
+        {% for error in form.description.errors %}
         <p class="help has-background-warning">
             {{ error }}
         </p>

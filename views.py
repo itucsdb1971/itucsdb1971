@@ -1,7 +1,7 @@
 from flask import render_template, current_app, abort, request, redirect, url_for, flash
 from datetime import datetime
-from movie import Movie
-from forms import MovieEditForm, LoginForm
+from task import Task
+from forms import TaskEditForm, LoginForm
 from flask_login import login_user, logout_user, current_user, login_required
 from user import get_user
 from passlib.hash import pbkdf2_sha256 as hasher
@@ -13,62 +13,62 @@ def home_page():
     return render_template("home.html", day=day_name)
 
 
-def movies_page():
+def tasks_page():
     db = current_app.config["db"]
     if request.method == "GET":
-        movies = db.get_movies()
-        return render_template("movies.html", movies=sorted(movies))
+        tasks = db.get_tasks()
+        return render_template("tasks.html", tasks=sorted(tasks))
     else:
         if not current_user.is_admin:
             abort(401)
-        form_movie_keys = request.form.getlist("movie_keys")
-        for form_movie_key in form_movie_keys:
-            db.delete_movie(int(form_movie_key))
-        flash("%(num)d movies deleted." % {"num": len(form_movie_keys)})
-        return redirect(url_for("movies_page"))
+        form_task_keys = request.form.getlist("task_keys")
+        for form_task_key in form_task_keys:
+            db.delete_task(int(form_task_key))
+        flash("%(num)d tasks deleted." % {"num": len(form_task_keys)})
+        return redirect(url_for("tasks_page"))
 
 
-def movie_page(movie_key):
+def task_page(task_key):
     db = current_app.config["db"]
-    movie = db.get_movie(movie_key)
-    if movie is None:
+    task = db.get_task(task_key)
+    if task is None:
         abort(404)
-    return render_template("movie.html", movie=movie)
+    return render_template("task.html", task=task)
 
 
 @login_required
-def movie_add_page():
+def task_add_page():
     if not current_user.is_admin:
         abort(401)
-    form = MovieEditForm()
+    form = TaskEditForm()
     if form.validate_on_submit():
-        title = form.data["title"]
-        year = form.data["year"]
-        movie = Movie(title, year=year)
+        name = form.data["name"]
+        description = form.data["description"]
+        task = Task(name, description=description)
         db = current_app.config["db"]
-        movie_key = db.add_movie(movie)
-        flash("Movie added.")
-        return redirect(url_for("movie_page", movie_key=movie_key))
-    return render_template("movie_edit.html", form=form)
+        task_key = db.add_task(task)
+        flash("Task added.")
+        return redirect(url_for("task_page", task_key=task_key))
+    return render_template("task_edit.html", form=form)
 
 
 @login_required
-def movie_edit_page(movie_key):
+def task_edit_page(task_key):
     db = current_app.config["db"]
-    movie = db.get_movie(movie_key)
-    if movie is None:
+    task = db.get_task(task_key)
+    if task is None:
         abort(404)
-    form = MovieEditForm()
+    form = TaskEditForm()
     if form.validate_on_submit():
-        title = form.data["title"]
-        year = form.data["year"]
-        movie = Movie(title, year=year)
-        db.update_movie(movie_key, movie)
-        flash("Movie data updated.")
-        return redirect(url_for("movie_page", movie_key=movie_key))
-    form.title.data = movie.title
-    form.year.data = movie.year if movie.year else ""
-    return render_template("movie_edit.html", form=form)
+        name = form.data["name"]
+        description = form.data["description"]
+        task = Task(name, description=description)
+        db.update_task(task_key, task)
+        flash("Task data updated.")
+        return redirect(url_for("task_page", task_key=task_key))
+    form.name.data = task.name
+    form.description.data = task.description if task.description else ""
+    return render_template("task_edit.html", form=form)
 
 
 def login_page():

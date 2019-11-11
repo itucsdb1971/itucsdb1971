@@ -1,54 +1,54 @@
 import psycopg2 as dbapi2
 
-from movie import Movie
+from task import Task
 
 
 class Database:
     def __init__(self, db_url):
         self.db_url = db_url
 
-    def add_movie(self, movie):
+    def add_task(self, task):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "INSERT INTO movie (title, yr) VALUES (%s, %s) RETURNING id"
-            cursor.execute(query, (movie.title, movie.year))
+            query = "INSERT INTO tasks (name, description) VALUES (%s, %s) RETURNING id"
+            cursor.execute(query, (task.name, task.description))
             connection.commit()
-            movie_key, = cursor.fetchone()
-        return movie_key
+            task_key, = cursor.fetchone()
+        return task_key
 
-    def update_movie(self, movie_key, movie):
+    def update_task(self, task_key, task):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "UPDATE movie SET title = %s, yr = %s WHERE (id = %s)"
-            cursor.execute(query, (movie.title, movie.year, movie_key))
-            connection.commit()
-
-    def delete_movie(self, movie_key):
-        with dbapi2.connect(self.db_url) as connection:
-            cursor = connection.cursor()
-            query = "DELETE FROM movie WHERE (id = %s)"
-            cursor.execute(query, (movie_key,))
+            query = "UPDATE tasks SET name = %s, description = %s WHERE (id = %s)"
+            cursor.execute(query, (task.name, task.description, task_key))
             connection.commit()
 
-    def get_movie(self, movie_key):
+    def delete_task(self, task_key):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT title, yr FROM movie WHERE (id = %s)"
-            cursor.execute(query, (movie_key,))
+            query = "DELETE FROM tasks WHERE (id = %s)"
+            cursor.execute(query, (task_key,))
+            connection.commit()
+
+    def get_task(self, task_key):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "SELECT name, description FROM tasks WHERE (id = %s)"
+            cursor.execute(query, (task_key,))
             try:
-                title, year = cursor.fetchone()
+                name, description = cursor.fetchone()
             except TypeError:
                 return None
-        movie_ = Movie(title, year=year)
-        return movie_
+        task_ = Task(name, description=description)
+        return task_
 
-    def get_movies(self):
-        movies = []
+    def get_tasks(self):
+        tasks = []
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT id, title, yr FROM movie ORDER BY id"
+            query = "SELECT id, name, description FROM tasks ORDER BY id"
             cursor.execute(query)
-            for movie_key, title, year in cursor:
-                movies.append((movie_key, Movie(title, year)))
-        print(movies)
-        return movies
+            for task_key, name, description in cursor:
+                tasks.append((task_key, Task(name, description)))
+        print(tasks)
+        return tasks
