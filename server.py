@@ -41,7 +41,9 @@ def create_app():
     app.add_url_rule(
         "/lists", view_func=views.lists_page, methods=["GET", "POST"]
     )
-    app.add_url_rule("/lists/<int:list_key>", view_func=views.list_page)
+    app.add_url_rule(
+        "/lists/<int:list_key>", view_func=views.list_page, methods=["GET", "POST"]
+    )
     app.add_url_rule(
         "/new-list", view_func=views.list_add_page, methods=["GET", "POST"]
     )

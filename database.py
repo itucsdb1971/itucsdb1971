@@ -32,11 +32,12 @@ class Database:
             cursor.execute(query, (task_key,))
             connection.commit()
 
-    def get_task(self, task_key):
+    def get_task(self, task_key, username):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT name, description FROM tasks WHERE (id = %s)"
-            cursor.execute(query, (task_key,))
+            query = "SELECT a.name, a.description FROM tasks a, task_user_relations b " \
+                    "WHERE (b.username = %s and b.task_id = a.id and a.id = %s)"
+            cursor.execute(query, (username, task_key))
             try:
                 name, description = cursor.fetchone()
             except TypeError:
@@ -44,15 +45,15 @@ class Database:
         task_ = Task(name, description=description)
         return task_
 
-    def get_tasks(self):
+    def get_tasks(self, username):
         tasks = []
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT id, name, description FROM tasks ORDER BY id"
-            cursor.execute(query)
+            query = "SELECT a.id, a.name, a.description FROM tasks a, task_user_relations b " \
+                    "WHERE (b.username = %s and b.task_id = a.id) ORDER BY a.id"
+            cursor.execute(query, (username,))
             for task_key, name, description in cursor:
                 tasks.append((task_key, Task(name, description)))
-        print(tasks)
         return tasks
 
     def add_list(self, list):
@@ -78,11 +79,12 @@ class Database:
             cursor.execute(query, (list_key,))
             connection.commit()
 
-    def get_list(self, list_key):
+    def get_list(self, list_key, username):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT name, description FROM lists WHERE (id = %s)"
-            cursor.execute(query, (list_key,))
+            query = "SELECT a.name, a.description FROM lists a, list_user_relations b " \
+                    "WHERE (b.username = %s and b.list_id = a.id and a.id = %s)"
+            cursor.execute(query, (username, list_key))
             try:
                 name, description = cursor.fetchone()
             except TypeError:
@@ -90,15 +92,15 @@ class Database:
         list_ = List(name, description=description)
         return list_
 
-    def get_lists(self):
+    def get_lists(self, username):
         lists = []
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT id, name, description FROM lists ORDER BY id"
-            cursor.execute(query)
+            query = "SELECT a.id, a.name, a.description FROM lists a, list_user_relations b " \
+                    "WHERE (b.username = %s and b.list_id = a.id) ORDER BY a.id"
+            cursor.execute(query, (username,))
             for list_key, name, description in cursor:
                 lists.append((list_key, List(name, description)))
-        print(lists)
         return lists
 
     def add_task_with_list(self, task):
@@ -118,7 +120,6 @@ class Database:
             cursor.execute(query, (list_key,))
             for task_key, name, description in cursor:
                 tasks.append((task_key, Task(name, description)))
-        print(tasks)
         return tasks
 
     def is_username_taken(self, username):
@@ -158,5 +159,19 @@ class Database:
             cursor = connection.cursor()
             query = "DELETE FROM users WHERE (name = %s)"
             cursor.execute(query, (username,))
+            connection.commit()
+
+    def add_task_user_relation(self, task_key, username):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "INSERT INTO task_user_relations (task_id, username) VALUES (%s, %s)"
+            cursor.execute(query, (task_key, username))
+            connection.commit()
+
+    def add_list_user_relation(self, list_key, username):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "INSERT INTO list_user_relations (list_id, username) VALUES (%s, %s)"
+            cursor.execute(query, (list_key, username))
             connection.commit()
 

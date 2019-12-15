@@ -18,11 +18,14 @@ def home_page():
 def tasks_page():
     db = current_app.config["db"]
     if request.method == "GET":
-        tasks = db.get_tasks()
+        tasks = db.get_tasks(current_user.username)
         return render_template("tasks.html", tasks=sorted(tasks))
     else:
         form_task_keys = request.form.getlist("task_keys")
         for form_task_key in form_task_keys:
+            task = db.get_task(form_task_key, current_user.username)
+            if task is None:
+                abort(404)
             db.delete_task(int(form_task_key))
         flash("%(num)d tasks deleted." % {"num": len(form_task_keys)})
         return redirect(url_for("tasks_page"))
@@ -31,7 +34,7 @@ def tasks_page():
 @login_required
 def task_page(task_key):
     db = current_app.config["db"]
-    task = db.get_task(task_key)
+    task = db.get_task(task_key, current_user.username)
     if task is None:
         abort(404)
     return render_template("task.html", task=task)
@@ -46,6 +49,7 @@ def task_add_page():
         task = Task(name, description=description)
         db = current_app.config["db"]
         task_key = db.add_task(task)
+        db.add_task_user_relation(task_key, current_user.username)
         flash("Task added.")
         return redirect(url_for("task_page", task_key=task_key))
     return render_template("task_edit.html", form=form)
@@ -54,7 +58,7 @@ def task_add_page():
 @login_required
 def task_edit_page(task_key):
     db = current_app.config["db"]
-    task = db.get_task(task_key)
+    task = db.get_task(task_key, current_user.username)
     if task is None:
         abort(404)
     form = TaskEditForm()
@@ -74,11 +78,14 @@ def task_edit_page(task_key):
 def lists_page():
     db = current_app.config["db"]
     if request.method == "GET":
-        lists = db.get_lists()
+        lists = db.get_lists(current_user.username)
         return render_template("lists.html", lists=sorted(lists))
     else:
         form_list_keys = request.form.getlist("list_keys")
         for form_list_key in form_list_keys:
+            list = db.get_list(form_list_key, current_user.username)
+            if list is None:
+                abort(404)
             db.delete_list(int(form_list_key))
         flash("%(num)d lists deleted." % {"num": len(form_list_keys)})
         return redirect(url_for("lists_page"))
@@ -88,7 +95,7 @@ def lists_page():
 def list_page(list_key):
     db = current_app.config["db"]
     if request.method == "GET":
-        list = db.get_list(list_key)
+        list = db.get_list(list_key, current_user.username)
         if list is None:
             abort(404)
         tasks = db.get_tasks_with_list(list_key)
@@ -96,6 +103,9 @@ def list_page(list_key):
     else:
         form_task_keys = request.form.getlist("task_keys")
         for form_task_key in form_task_keys:
+            task = db.get_task(form_task_key, current_user.username)
+            if task is None:
+                abort(404)
             db.delete_task(int(form_task_key))
         flash("%(num)d tasks deleted." % {"num": len(form_task_keys)})
         return redirect(url_for("list_page", list_key=list_key))
@@ -110,6 +120,7 @@ def list_add_page():
         list = List(name, description=description)
         db = current_app.config["db"]
         list_key = db.add_list(list)
+        db.add_list_user_relation(list_key, current_user.username)
         flash("List added.")
         return redirect(url_for("list_page", list_key=list_key))
     return render_template("list_edit.html", form=form)
@@ -118,7 +129,7 @@ def list_add_page():
 @login_required
 def list_edit_page(list_key):
     db = current_app.config["db"]
-    list = db.get_list(list_key)
+    list = db.get_list(list_key, current_user.username)
     if list is None:
         abort(404)
     form = ListEditForm()
@@ -143,6 +154,7 @@ def list_add_task_page(list_key):
         task = Task(name, description=description, list_id=list_key)
         db = current_app.config["db"]
         task_key = db.add_task_with_list(task)
+        db.add_task_user_relation(task_key, current_user.username)
         flash("Task added.")
         return redirect(url_for("list_page", list_key=list_key))
     return render_template("task_edit.html", form=form)

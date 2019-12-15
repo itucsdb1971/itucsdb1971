@@ -18,6 +18,16 @@ INIT_STATEMENTS = [
     "name VARCHAR(80) PRIMARY KEY,"
     "password TEXT NOT NULL"
     ")",
+    "CREATE TABLE IF NOT EXISTS task_user_relations ("
+    "id SERIAL PRIMARY KEY,"
+    "task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,"
+    "username VARCHAR(80) NOT NULL REFERENCES users(name) ON DELETE CASCADE"
+    ")",
+    "CREATE TABLE IF NOT EXISTS list_user_relations ("
+    "id SERIAL PRIMARY KEY,"
+    "list_id INTEGER NOT NULL REFERENCES lists(id) ON DELETE CASCADE,"
+    "username VARCHAR(80) NOT NULL REFERENCES users(name) ON DELETE CASCADE"
+    ")",
 ]
 
 
