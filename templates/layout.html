@@ -17,6 +17,7 @@
             <span class="navbar-item">
               <a class="button is-link" href="{{ url_for('home_page') }}">Home</a>
             </span>
+            {% if current_user.is_authenticated %}
             <span class="navbar-item">
               <a class="button is-link" href="{{ url_for('lists_page') }}">My lists</a>
             </span>
@@ -29,6 +30,7 @@
             <span class="navbar-item">
               <a class="button is-link" href="{{ url_for('task_add_page') }}">Add task</a>
             </span>
+            {% endif %}
           </div>
           <div class="navbar-end">
             <span class="navbar-item">

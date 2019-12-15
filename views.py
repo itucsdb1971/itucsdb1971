@@ -14,6 +14,7 @@ def home_page():
     return render_template("home.html", day=day_name)
 
 
+@login_required
 def tasks_page():
     db = current_app.config["db"]
     if request.method == "GET":
@@ -27,6 +28,7 @@ def tasks_page():
         return redirect(url_for("tasks_page"))
 
 
+@login_required
 def task_page(task_key):
     db = current_app.config["db"]
     task = db.get_task(task_key)
@@ -68,6 +70,7 @@ def task_edit_page(task_key):
     return render_template("task_edit.html", form=form)
 
 
+@login_required
 def lists_page():
     db = current_app.config["db"]
     if request.method == "GET":
@@ -81,6 +84,7 @@ def lists_page():
         return redirect(url_for("lists_page"))
 
 
+@login_required
 def list_page(list_key):
     db = current_app.config["db"]
     if request.method == "GET":
