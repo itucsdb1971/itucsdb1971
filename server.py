@@ -1,5 +1,6 @@
 from flask import Flask
-import views, dbinit
+import views
+import dbinit
 from database import Database
 from flask_login import LoginManager
 from user import get_user
@@ -24,6 +25,9 @@ def create_app():
         "/login", view_func=views.login_page, methods=["GET", "POST"]
     )
     app.add_url_rule("/logout", view_func=views.logout_page)
+    app.add_url_rule(
+        "/signup", view_func=views.signup_page, methods=["GET", "POST"]
+    )
     app.add_url_rule(
         "/tasks", view_func=views.tasks_page, methods=["GET", "POST"]
     )

@@ -7,7 +7,6 @@ class User(UserMixin):
         self.username = username
         self.password = password
         self.active = True
-        self.is_admin = False
 
     def get_id(self):
         return self.username
@@ -17,9 +16,18 @@ class User(UserMixin):
         return self.active
 
 
-def get_user(user_id):
-    password = current_app.config["PASSWORDS"].get(user_id)
-    user = User(user_id, password) if password else None
-    if user is not None:
-        user.is_admin = user.username in current_app.config["ADMIN_USERS"]
+def get_user(username):
+    db = current_app.config["db"]
+    user = db.get_user(username)
     return user
+
+
+def create_user(username, password):
+    db = current_app.config["db"]
+    db.add_user(username, password)
+    return
+
+
+def is_username_taken(username):
+    db = current_app.config["db"]
+    return db.is_username_taken(username)

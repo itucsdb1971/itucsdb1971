@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
-{% block title %}Login{% endblock %}
+{% block title %}Sign Up{% endblock %}
 {% block content %}
     <section class="hero">
       <div class="hero-body">
         <div class="container has-text-centered">
           <div class="column is-4 is-offset-4">
-            <h3 class="title has-text-grey">Login</h3>
+            <h3 class="title has-text-grey">Sign Up</h3>
             <div class="box">
-              <form action="" method="post" name="login">
+              <form action="" method="post" name="signup">
                 {{ form.csrf_token }}
 
                 <div class="field">
@@ -36,16 +36,9 @@
                 </div>
 
                 <button class="button is-block is-info is-large is-fullwidth">
-                  Login
+                  Sign Up
                 </button>
               </form>
-
-              <div class="field">
-              </div>
-
-              <a class="button is-block is-primary is-large is-fullwidth" href="{{ url_for('signup_page') }}">
-                Signup
-              </a>
             </div>
           </div>
         </div>

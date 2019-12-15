@@ -2,6 +2,7 @@ import psycopg2 as dbapi2
 
 from task import Task
 from list import List
+from user import User
 
 
 class Database:
@@ -119,3 +120,43 @@ class Database:
                 tasks.append((task_key, Task(name, description)))
         print(tasks)
         return tasks
+
+    def is_username_taken(self, username):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "SELECT name FROM users WHERE (name = %s)"
+            cursor.execute(query, (username,))
+            try:
+                name = cursor.fetchone()
+                if name is None:
+                    return False
+            except TypeError:
+                return True
+        return True
+
+    def get_user(self, username):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "SELECT name, password FROM users WHERE (name = %s)"
+            cursor.execute(query, (username,))
+            try:
+                name, password = cursor.fetchone()
+            except TypeError:
+                return None
+        user_ = User(name, password)
+        return user_
+
+    def add_user(self, username, password):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "INSERT INTO users (name, password) VALUES (%s, %s)"
+            cursor.execute(query, (username, password))
+            connection.commit()
+
+    def delete_user(self, username):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "DELETE FROM users WHERE (name = %s)"
+            cursor.execute(query, (username,))
+            connection.commit()
+

@@ -4,7 +4,7 @@ from task import Task
 from list import List
 from forms import TaskEditForm, ListEditForm, LoginForm
 from flask_login import login_user, logout_user, current_user, login_required
-from user import get_user
+from user import get_user, create_user, is_username_taken
 from passlib.hash import pbkdf2_sha256 as hasher
 
 
@@ -20,8 +20,6 @@ def tasks_page():
         tasks = db.get_tasks()
         return render_template("tasks.html", tasks=sorted(tasks))
     else:
-        if not current_user.is_admin:
-            abort(401)
         form_task_keys = request.form.getlist("task_keys")
         for form_task_key in form_task_keys:
             db.delete_task(int(form_task_key))
@@ -39,8 +37,6 @@ def task_page(task_key):
 
 @login_required
 def task_add_page():
-    if not current_user.is_admin:
-        abort(401)
     form = TaskEditForm()
     if form.validate_on_submit():
         name = form.data["name"]
@@ -78,8 +74,6 @@ def lists_page():
         lists = db.get_lists()
         return render_template("lists.html", lists=sorted(lists))
     else:
-        if not current_user.is_admin:
-            abort(401)
         form_list_keys = request.form.getlist("list_keys")
         for form_list_key in form_list_keys:
             db.delete_list(int(form_list_key))
@@ -96,8 +90,6 @@ def list_page(list_key):
         tasks = db.get_tasks_with_list(list_key)
         return render_template("list.html", list=list, tasks=sorted(tasks))
     else:
-        if not current_user.is_admin:
-            abort(401)
         form_task_keys = request.form.getlist("task_keys")
         for form_task_key in form_task_keys:
             db.delete_task(int(form_task_key))
@@ -107,8 +99,6 @@ def list_page(list_key):
 
 @login_required
 def list_add_page():
-    if not current_user.is_admin:
-        abort(401)
     form = ListEditForm()
     if form.validate_on_submit():
         name = form.data["name"]
@@ -142,8 +132,6 @@ def list_edit_page(list_key):
 
 @login_required
 def list_add_task_page(list_key):
-    if not current_user.is_admin:
-        abort(401)
     form = TaskEditForm()
     if form.validate_on_submit():
         name = form.data["name"]
@@ -176,3 +164,17 @@ def logout_page():
     logout_user()
     flash("You have logged out.")
     return redirect(url_for("home_page"))
+
+
+def signup_page():
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.data["username"]
+        if not is_username_taken(username):
+            password = form.data["password"]
+            create_user(username, hasher.encrypt(password))
+            flash("You have successfully created an account.")
+            next_page = request.args.get("next", url_for("login_page"))
+            return redirect(next_page)
+        flash("Username taken.")
+    return render_template("signup.html", form=form)

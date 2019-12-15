@@ -9,6 +9,12 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
 
 
+class SignupForm(FlaskForm):
+    username = StringField("Username", validators=[DataRequired()])
+
+    password = PasswordField("Password", validators=[DataRequired()])
+
+
 class TaskEditForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
 

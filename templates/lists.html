@@ -9,11 +9,9 @@
         {% for list_key, list in lists %}
         <tr>
           <td>
-            {% if current_user.is_admin %}
             <label class="checkbox">
               <input type="checkbox" name="list_keys" value="{{ list_key }}"/>
             </label>
-            {% endif %}
             <a href="{{ url_for('list_page', list_key=list_key) }}">
               {{ list.name }}
               {% if list.description %} ({{ list.description }}) {% endif %}
@@ -23,13 +21,11 @@
         {% endfor %}
       </table>
 
-      {% if current_user.is_admin %}
       <div class="field is-grouped">
         <div class="control">
           <button class="button is-danger is-small">Delete</button>
         </div>
       </div>
-      {% endif %}
     </form>
     {% endif %}
 {% endblock %}

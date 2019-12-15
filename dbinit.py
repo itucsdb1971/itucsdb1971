@@ -14,6 +14,10 @@ INIT_STATEMENTS = [
     "description VARCHAR(80),"
     "list_id INTEGER REFERENCES lists(id) ON DELETE CASCADE"
     ")",
+    "CREATE TABLE IF NOT EXISTS users("
+    "name VARCHAR(80) PRIMARY KEY,"
+    "password TEXT NOT NULL"
+    ")",
 ]
 
 
