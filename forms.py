@@ -16,6 +16,9 @@ class SignupForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
 
     def validate_username(form, field):
+        if len(field.data) >= 80:
+            raise ValidationError("Username too long!")
+
         if "," in field.data or " " in field.data:
             raise ValidationError("Username error! (Can not include: (,) or space)")
 
@@ -29,6 +32,14 @@ class TaskEditForm(FlaskForm):
 
     deadline = DateField("Deadline", validators=[Optional()])
 
+    def validate_name(form, field):
+        if len(field.data) >= 80:
+            raise ValidationError("Username too long!")
+
+    def validate_description(form, field):
+        if len(field.data) >= 80:
+            raise ValidationError("Description too long!")
+
     def validate_share(form, field):
         share = [x for x in field.data.split(",") if x != "" or x != " "]
         for username in share:
@@ -41,5 +52,13 @@ class ListEditForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
 
     description = StringField("Description", validators=[Optional()])
+
+    def validate_name(form, field):
+        if len(field.data) >= 80:
+            raise ValidationError("Username too long!")
+
+    def validate_description(form, field):
+        if len(field.data) >= 80:
+            raise ValidationError("Description too long!")
 
 

@@ -14,7 +14,7 @@
             </label>
             <a href="{{ url_for('list_page', list_key=list_key) }}">
               {{ list.name }}
-              {% if list.description %} ({{ list.description }}) {% endif %}
+              {% if list.description %} (Description: {{ list.description }}) {% endif %}
             </a>
           </td>
         </tr>

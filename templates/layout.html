@@ -14,7 +14,17 @@
   <body>
     <header>
       <nav class="navbar" aria-label="main navigation">
-        <div class="navbar-menu">
+        <div class="navbar-brand">
+          <a class="navbar-item" style="font-weight:bold;">
+            To-Do Application
+          </a>
+          <span class="navbar-burger burger" data-target="navMenu">
+              <span></span>
+              <span></span>
+              <span></span>
+          </span>
+        </div>
+        <div id="navMenu" class="navbar-menu">
           <div class="navbar-start">
             <span class="navbar-item">
               <a class="button is-link" href="{{ url_for('home_page') }}">Home</a>
@@ -66,5 +76,15 @@
         <small>&copy; 2019, Emre Horsanalı</small>
       </div>
     </footer>
+    <script type="text/javascript">
+      (function() {
+        var burger = document.querySelector('.burger');
+        var nav = document.querySelector('#'+burger.dataset.target);
+        burger.addEventListener('click', function(){
+          burger.classList.toggle('is-active');
+          nav.classList.toggle('is-active');
+        });
+      })();
+    </script>
   </body>
 </html>
