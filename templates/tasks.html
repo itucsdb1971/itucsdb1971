@@ -7,7 +7,6 @@
     <form action="" method="post" name="task_list">
       {% if tasks %}
       <h4 class="subtitle">My Tasks</h4>
-
       <table class="table is-striped is-fullwidth">
         {% for task_key, task in tasks %}
         <tr>
@@ -27,7 +26,7 @@
       {% endif %}
 
       {% if shared_tasks %}
-      <h4 class="subtitle">Shared Tasks</h2>
+      <h4 class="subtitle">Shared Tasks</h4>
 
       <table class="table is-striped is-fullwidth">
         {% for task_key, task in shared_tasks %}
@@ -54,6 +53,6 @@
       </div>
     </form>
     {% else %}
-    <h4 class="subtitle">There are no tasks.</h2>
+    <h4 class="subtitle">There are no tasks.</h4>
     {% endif %}
 {% endblock %}
