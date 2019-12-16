@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, DateField
 from wtforms.validators import DataRequired, Optional, ValidationError
 from user import is_username_taken
 
@@ -26,6 +26,8 @@ class TaskEditForm(FlaskForm):
     description = StringField("Description", validators=[Optional()])
 
     share = StringField("Share", validators=[Optional()])
+
+    deadline = DateField("Deadline", validators=[Optional()])
 
     def validate_share(form, field):
         share = [x for x in field.data.split(",") if x != "" or x != " "]

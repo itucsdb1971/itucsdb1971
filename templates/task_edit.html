@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Edit task{% endblock %}
 {% block content %}
+<link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma-calendar@6.0.7/dist/css/bulma-calendar.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/bulma-calendar@6.0.7/dist/js/bulma-calendar.min.js"></script>
+
     <h1 class="title">Edit task</h1>
 
     <form action="" method="post" name="task_edit">
@@ -19,7 +23,7 @@
       </div>
 
       <div class="field">
-        <label for="description" class="label">Description</label>
+        <label for="description" class="label">Description (Optional)</label>
         <div class="control">
           {{ form.description(class='input') }}
         </div>
@@ -30,8 +34,20 @@
         {% endfor %}
       </div>
 
+      <div class="field">
+        <label for="deadline" class="label">Deadline (Optional)</label>
+        <div class="control">
+          {{ form.deadline(type='date') }}
+        </div>
+        {% for error in form.deadline.errors %}
+        <p class="help has-background-warning">
+            {{ error }}
+        </p>
+        {% endfor %}
+      </div>
+
       <div id="shareDiv" class="field">
-        <label for="share" class="label">Share</label>
+        <label for="share" class="label">Share (Optional)</label>
         {% for error in form.share.errors %}
         <p class="help has-background-warning">
             {{ error }}
@@ -76,6 +92,9 @@
     </form>
 
     <script>
+      const options = {displayMode: "inline", showHeader: "false", weekStart: 1, dateFormat: "YYYY-MM-DD"}
+      const calendars = bulmaCalendar.attach('[type="date"]', options);
+
       document.getElementById('share').value = "";
 
       $(document).ready(function(){

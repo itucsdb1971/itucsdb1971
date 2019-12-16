@@ -56,7 +56,8 @@ def task_add_page():
     if form.validate_on_submit():
         name = form.data["name"]
         description = form.data["description"]
-        task = Task(name, description=description)
+        deadline = form.data["deadline"]
+        task = Task(name, description=description, deadline=deadline)
         db = current_app.config["db"]
         task_key = db.add_task(task)
         db.add_task_user_relation(task_key, current_user.username)
@@ -85,7 +86,8 @@ def task_edit_page(task_key):
         else:
             name = form.data["name"]
             description = form.data["description"]
-            task = Task(name, description=description)
+            deadline = form.data["deadline"]
+            task = Task(name, description=description, deadline=deadline)
             db.update_task(task_key, task)
         flash("Task data updated.")
         if current_user.username not in share:
@@ -93,6 +95,7 @@ def task_edit_page(task_key):
         return redirect(url_for("task_page", task_key=task_key))
     form.name.data = task.name
     form.description.data = task.description if task.description else ""
+    form.deadline.data = task.deadline if task.deadline else ""
     task_share = db.get_task_share(task_key)
     if len(task_share) < 1:
         task_share = None
@@ -191,7 +194,8 @@ def list_new_task_page(list_key):
     if form.validate_on_submit():
         name = form.data["name"]
         description = form.data["description"]
-        task = Task(name, description=description, list_id=list_key)
+        deadline = form.data["deadline"]
+        task = Task(name, description=description, list_id=list_key, deadline=deadline)
         db = current_app.config["db"]
         task_key = db.add_task_with_list(task)
         db.add_task_user_relation(task_key, current_user.username)

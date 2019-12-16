@@ -12,6 +12,7 @@ INIT_STATEMENTS = [
     "id SERIAL PRIMARY KEY,"
     "name VARCHAR(80) NOT NULL,"
     "description VARCHAR(80),"
+    "deadline DATE,"
     "list_id INTEGER REFERENCES lists(id) ON DELETE CASCADE"
     ")",
     "CREATE TABLE IF NOT EXISTS users("
