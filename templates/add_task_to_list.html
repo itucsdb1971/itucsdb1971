@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
-{% block title %}Tasks{% endblock %}
+{% block title %}Edit task{% endblock %}
 {% block content %}
-    <h1 class="title">Tasks</h1>
+    <h1 class="title">Add Task</h1>
 
     {% if tasks or shared_tasks %}
-    <form action="" method="post" name="task_list">
+    <form action="" method="post" name="add_task_to_list">
       {% if tasks %}
       <h4 class="subtitle">My Tasks</h4>
 
@@ -47,7 +47,7 @@
 
       <div class="field is-grouped">
         <div class="control">
-          <button class="button is-danger is-small">Delete</button>
+          <button class="button is-success is-small">Add</button>
         </div>
       </div>
     </form>

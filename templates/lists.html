@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
-{% block title %}My Lists{% endblock %}
+{% block title %}Lists{% endblock %}
 {% block content %}
-    <h1 class="title">My Lists</h1>
+    <h1 class="title">Lists</h1>
 
     {% if lists %}
     <form action="" method="post" name="list_list">
@@ -27,5 +27,7 @@
         </div>
       </div>
     </form>
+    {% else %}
+    <h4 class="subtitle">There are no lists.</h2>
     {% endif %}
 {% endblock %}

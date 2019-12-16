@@ -175,3 +175,55 @@ class Database:
             cursor.execute(query, (list_key, username))
             connection.commit()
 
+    def get_task_share(self, task_key):
+        usernames = []
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "SELECT username FROM task_user_relations WHERE (task_id = %s)"
+            cursor.execute(query, (task_key,))
+            for username in cursor:
+                usernames.append(username[0])
+        return usernames
+
+    def delete_task_user_relation(self, task_key):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "DELETE FROM task_user_relations WHERE (task_id = %s)"
+            cursor.execute(query, (task_key,))
+            connection.commit()
+
+    def is_exist_task_user_relation(self, task_key):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "SELECT task_id, username FROM task_user_relations WHERE (task_id = %s)"
+            cursor.execute(query, (task_key,))
+            try:
+                task_key, username = cursor.fetchone()
+            except TypeError:
+                return False
+        return True
+
+    def count_task_user_relation(self, task_key):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "SELECT COUNT(task_id) FROM task_user_relations WHERE (task_id = %s)"
+            cursor.execute(query, (task_key,))
+            try:
+                count = cursor.fetchone()
+            except TypeError:
+                return 0
+        return count
+
+    def task_add_list(self, list_key, task_key):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "UPDATE tasks SET list_id = %s WHERE (id = %s)"
+            cursor.execute(query, (list_key, task_key))
+            connection.commit()
+
+    def task_remove_list(self, task_key):
+        with dbapi2.connect(self.db_url) as connection:
+            cursor = connection.cursor()
+            query = "UPDATE tasks SET list_id = NULL WHERE (id = %s)"
+            cursor.execute(query, (task_key,))
+            connection.commit()

@@ -23,17 +23,22 @@
            href="{{ request.path }}/edit">Edit list</a>
       </div>
       <div class="control">
+        <a class="button is-success is-small"
+           href="{{ request.path }}/new-task">Add new task</a>
+      </div>
+      <div class="control">
         <a class="button is-link is-small"
-           href="{{ request.path }}/new-task">Add task</a>
+           href="{{ request.path }}/add-task">Add existing task</a>
       </div>
     </div>
     {% endif %}
 
-    {% if tasks %}
+    {% if tasks or shared_tasks %}
     <form action="" method="post" name="task_list">
+      {% if tasks %}
       <table class="table is-striped is-fullwidth">
         <tr>
-          <th>Tasks:</th>
+          <th>My Tasks:</th>
         </tr>
         {% for task_key, task in tasks %}
         <tr>
@@ -49,12 +54,43 @@
         </tr>
         {% endfor %}
       </table>
+      {% endif %}
+
+      {% if shared_tasks %}
+      <table class="table is-striped is-fullwidth">
+        <tr>
+          <th>Shared Tasks:</th>
+        </tr>
+        {% for task_key, task in shared_tasks %}
+        <tr>
+          <td>
+            <label class="checkbox">
+              <input type="checkbox" name="task_keys" value="{{ task_key }}"/>
+            </label>
+            <a href="{{ url_for('task_page', task_key=task_key) }}">
+              {{ task.name }}
+              {% if task.description %} ({{ task.description }}) {% endif %}
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
 
       <div class="field is-grouped">
         <div class="control">
-          <button class="button is-danger is-small">Delete tasks</button>
+          <button name="remove" class="button is-danger is-small is-outlined">Remove tasks</button>
+        </div>
+        <div class="control">
+          <button name="delete" class="button is-danger is-small">Delete tasks</button>
         </div>
       </div>
     </form>
+    {% else %}
+    <table class="table">
+      <tr>
+        <th>There are no tasks for this list.</th>
+      </tr>
+    </table>
     {% endif %}
 {% endblock %}

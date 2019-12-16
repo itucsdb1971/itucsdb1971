@@ -14,6 +14,16 @@
         <td>{{ task.description }}</td>
       </tr>
       {% endif %}
+        {% if task_share %}
+      <tr>
+        <th>Shared:</th>
+        <td>
+            {% for username in task_share %}
+                <li>{{ username }}</li>
+            {% endfor %}
+        </td>
+      </tr>
+        {% endif %}
     </table>
 
     {% if current_user.is_authenticated %}

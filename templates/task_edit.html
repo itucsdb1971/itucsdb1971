@@ -30,10 +30,76 @@
         {% endfor %}
       </div>
 
+      <div id="shareDiv" class="field">
+        <label for="share" class="label">Share</label>
+        {% for error in form.share.errors %}
+        <p class="help has-background-warning">
+            {{ error }}
+        </p>
+        {% endfor %}
+        <div class="field has-addons">
+          <div class="control">
+            {{ form.share(class='input is-hidden') }}
+            <input id="shareInput" type="text" class="input">
+          </div>
+          <div onclick="appendItem()" class="control">
+            <a class="button is-primary">
+              <span class="icon is-large">
+                <i class="fas fa-plus"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        {% if task_share %}
+          {% for username in task_share %}
+            <div class="field has-addons">
+              <div class="control">
+                <input type="text" name="username" class="input is-hovered is-focused" value={{username}} disabled>
+              </div>
+              <div onclick="removeItem(this)" class="control">
+                <a class="button is-light">
+                  <span class="icon has-text-danger is-large">
+                    <i class="fas fa-times"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
       <div class="field is-grouped">
         <div class="control">
           <button class="button is-primary is-small">Save</button>
         </div>
       </div>
     </form>
+
+    <script>
+      document.getElementById('share').value = "";
+
+      $(document).ready(function(){
+        var usernames = document.getElementsByName('username');
+        for (i = 0; i < usernames.length; i++) {
+          document.getElementById('share').value += usernames[i].value + ",";
+        }
+      });
+
+      function appendItem()  {
+        var input = document.getElementById("shareInput").value;
+        document.getElementById('share').value += input + ",";
+        var container = document.getElementById("shareDiv");
+        var newRow = document.createElement("div");
+        newRow.className = "field has-addons";
+        newRow.innerHTML = '<div class="control"><input type="text" class="input is-hovered is-focused" value="' + input + '" disabled></div><div onclick="removeItem(this)" class="control"><a class="button is-light"><span class="icon has-text-danger is-large"><i class="fas fa-times"></i></span></a></div>';
+        container.appendChild(newRow);
+      }
+      function removeItem(self)  {
+        var value = self.parentElement.getElementsByTagName('input')[0].value;
+        var list = document.getElementById('share').value.split(',');
+        list.splice(list.indexOf(value), 1 );
+        document.getElementById('share').value = list.join(", ")
+        self.parentElement.remove();
+      }
+    </script>
 {% endblock %}
