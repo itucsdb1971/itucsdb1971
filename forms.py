@@ -15,6 +15,10 @@ class SignupForm(FlaskForm):
 
     password = PasswordField("Password", validators=[DataRequired()])
 
+    def validate_username(form, field):
+        if "," in field.data or " " in field.data:
+            raise ValidationError("Username error! (Can not include: (,) or space)")
+
 
 class TaskEditForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])

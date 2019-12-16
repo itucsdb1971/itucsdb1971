@@ -2,7 +2,7 @@ from flask import render_template, current_app, abort, request, redirect, url_fo
 from datetime import datetime
 from task import Task
 from list import List
-from forms import TaskEditForm, ListEditForm, LoginForm
+from forms import TaskEditForm, ListEditForm, LoginForm, SignupForm
 from flask_login import login_user, logout_user, current_user, login_required
 from user import get_user, create_user, is_username_taken
 from passlib.hash import pbkdf2_sha256 as hasher
@@ -76,8 +76,6 @@ def task_edit_page(task_key):
         abort(404)
     form = TaskEditForm()
     if form.validate_on_submit():
-        # add status location etc.
-        # make for list?
         share = [x for x in form.data["share"].split(",") if x != "" and x != " "]
         db.delete_task_user_relation(task_key)
         for username in share:
@@ -247,7 +245,7 @@ def logout_page():
 
 
 def signup_page():
-    form = LoginForm()
+    form = SignupForm()
     if form.validate_on_submit():
         username = form.data["username"]
         if not is_username_taken(username):
