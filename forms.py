@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField
-from wtforms.validators import DataRequired, Optional, ValidationError
+from wtforms import StringField, PasswordField, DateField, IntegerField
+from wtforms.validators import DataRequired, Optional, ValidationError, InputRequired
 from user import is_username_taken
 
 
@@ -31,6 +31,12 @@ class TaskEditForm(FlaskForm):
     share = StringField("Share", validators=[Optional()])
 
     deadline = DateField("Deadline", validators=[Optional()])
+
+    status = IntegerField("Status", validators=[InputRequired()])
+
+    assign = StringField("Assign", validators=[Optional()])
+
+    location = StringField("Location", validators=[Optional()])
 
     def validate_name(form, field):
         if len(field.data) >= 80:

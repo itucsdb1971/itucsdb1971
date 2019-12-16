@@ -36,21 +36,38 @@
     {% if tasks or shared_tasks %}
     <form action="" method="post" name="task_list">
       {% if tasks %}
-      <table class="table is-striped is-fullwidth">
+      <h4 class="subtitle"><br>My Tasks:</h4>
+      <table class="table is-bordered is-fullwidth">
         <tr>
-          <th>My Tasks:</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Deadline</th>
+          <th>Assign</th>
+          <th>Location</th>
         </tr>
         {% for task_key, task in tasks %}
-        <tr>
+        <tr class="{% if task.status == 1 %}is-selected
+                   {% elif task.status == 2 %}is-selected-yellow
+                   {% elif task.status == 3 %}is-selected-red{% endif %}">
           <td>
             <label class="checkbox">
               <input type="checkbox" name="task_keys" value="{{ task_key }}"/>
             </label>
             <a href="{{ url_for('task_page', task_key=task_key) }}">
               {{ task.name }}
-              {% if task.description %} (Description: {{ task.description }}) {% endif %}
-              {% if task.deadline %} (Deadline: {{ task.deadline }}) {% endif %}
             </a>
+          </td>
+          <td>
+            {% if task.description %}{{ task.description }}{% endif %}
+          </td>
+          <td>
+            {% if task.deadline %}{{ task.deadline }}{% endif %}
+          </td>
+          <td>
+            {% if task.assign %}{{ task.assign }}{% endif %}
+          </td>
+          <td>
+            {% if task.location %}{{ task.location }}{% endif %}
           </td>
         </tr>
         {% endfor %}
@@ -58,21 +75,38 @@
       {% endif %}
 
       {% if shared_tasks %}
-      <table class="table is-striped is-fullwidth">
+      <h4 class="subtitle">Shared Tasks:</h4>
+      <table class="table is-bordered is-fullwidth">
         <tr>
-          <th>Shared Tasks:</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Deadline</th>
+          <th>Assign</th>
+          <th>Location</th>
         </tr>
         {% for task_key, task in shared_tasks %}
-        <tr>
+        <tr class="{% if task.status == 1 %}is-selected
+                   {% elif task.status == 2 %}is-selected-yellow
+                   {% elif task.status == 3 %}is-selected-red{% endif %}">
           <td>
             <label class="checkbox">
               <input type="checkbox" name="task_keys" value="{{ task_key }}"/>
             </label>
             <a href="{{ url_for('task_page', task_key=task_key) }}">
               {{ task.name }}
-              {% if task.description %} (Description: {{ task.description }}) {% endif %}
-              {% if task.deadline %} (Deadline: {{ task.deadline }}) {% endif %}
             </a>
+          </td>
+          <td>
+            {% if task.description %}{{ task.description }}{% endif %}
+          </td>
+          <td>
+            {% if task.deadline %}{{ task.deadline }}{% endif %}
+          </td>
+          <td>
+            {% if task.assign %}{{ task.assign }}{% endif %}
+          </td>
+          <td>
+            {% if task.location %}{{ task.location }}{% endif %}
           </td>
         </tr>
         {% endfor %}

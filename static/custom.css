@@ -19,3 +19,46 @@ table td {
     word-wrap: break-word;         /* All browsers since IE 5.5+ */
     overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
 }
+
+.table tr.is-selected {
+  background-color: #48c774;
+  color: #000;
+}
+
+.table tr.is-selected a,
+.table tr.is-selected strong {
+  color: #fff;
+}
+
+
+.table tr.is-selected-red {
+  background-color: #ff3860;
+  color: #000;
+}
+
+.table tr.is-selected-red a,
+.table tr.is-selected-red strong {
+  color: #fff;
+}
+
+.table tr.is-selected-red td,
+.table tr.is-selected-red th {
+  border-color: #fff;
+  color: currentColor;
+}
+
+.table tr.is-selected-yellow {
+  background-color: #ffdd57;
+  color: #000;
+}
+
+.table tr.is-selected-yellow a,
+.table tr.is-selected-yellow strong {
+  color: #ff3860;
+}
+
+.table tr.is-selected-yellow td,
+.table tr.is-selected-yellow th {
+  border-color: #fff;
+  color: currentColor;
+}

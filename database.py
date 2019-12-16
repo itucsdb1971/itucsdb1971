@@ -12,8 +12,9 @@ class Database:
     def add_task(self, task):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "INSERT INTO tasks (name, description, deadline) VALUES (%s, %s, %s) RETURNING id"
-            cursor.execute(query, (task.name, task.description, task.deadline))
+            query = "INSERT INTO tasks (name, description, deadline, status, assign, location) " \
+                    "VALUES (%s, %s, %s, %s, %s, %s) RETURNING id"
+            cursor.execute(query, (task.name, task.description, task.deadline, task.status, task.assign, task.location))
             connection.commit()
             task_key, = cursor.fetchone()
         return task_key
@@ -21,8 +22,11 @@ class Database:
     def update_task(self, task_key, task):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "UPDATE tasks SET name = %s, description = %s, deadline = %s WHERE (id = %s)"
-            cursor.execute(query, (task.name, task.description, task.deadline, task_key))
+            query = "UPDATE tasks " \
+                    "SET name = %s, description = %s, deadline = %s, status = %s, assign = %s, location = %s " \
+                    "WHERE (id = %s)"
+            cursor.execute(query, (task.name, task.description, task.deadline, task.status,
+                                   task.assign, task.location, task_key))
             connection.commit()
 
     def delete_task(self, task_key):
@@ -35,25 +39,28 @@ class Database:
     def get_task(self, task_key, username):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT a.name, a.description, a.deadline FROM tasks a, task_user_relations b " \
+            query = "SELECT a.name, a.description, a.deadline, a.status, a.assign, a.location " \
+                    "FROM tasks a, task_user_relations b " \
                     "WHERE (b.username = %s and b.task_id = a.id and a.id = %s)"
             cursor.execute(query, (username, task_key))
             try:
-                name, description, deadline = cursor.fetchone()
+                name, description, deadline, status, assign, location = cursor.fetchone()
             except TypeError:
                 return None
-        task_ = Task(name, description=description, deadline=deadline)
+        task_ = Task(name, description=description, deadline=deadline, status=status, assign=assign, location=location)
         return task_
 
     def get_tasks(self, username):
         tasks = []
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT a.id, a.name, a.description, a.deadline FROM tasks a, task_user_relations b " \
+            query = "SELECT a.id, a.name, a.description, a.deadline, a.status, a.assign, a.location " \
+                    "FROM tasks a, task_user_relations b " \
                     "WHERE (b.username = %s and b.task_id = a.id) ORDER BY a.id"
             cursor.execute(query, (username,))
-            for task_key, name, description, deadline in cursor:
-                tasks.append((task_key, Task(name, description=description, deadline=deadline)))
+            for task_key, name, description, deadline, status, assign, location in cursor:
+                tasks.append((task_key, Task(name, description=description, deadline=deadline,
+                                             status=status, assign=assign, location=location)))
         return tasks
 
     def add_list(self, list):
@@ -106,8 +113,10 @@ class Database:
     def add_task_with_list(self, task):
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "INSERT INTO tasks (name, description, deadline, list_id) VALUES (%s, %s, %s, %s) RETURNING id"
-            cursor.execute(query, (task.name, task.description, task.deadline, task.list_id))
+            query = "INSERT INTO tasks (name, description, deadline, status, assign, location, list_id) " \
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id"
+            cursor.execute(query, (task.name, task.description, task.deadline, task.status, task.assign,
+                                   task.location, task.list_id))
             connection.commit()
             task_key, = cursor.fetchone()
         return task_key
@@ -116,10 +125,12 @@ class Database:
         tasks = []
         with dbapi2.connect(self.db_url) as connection:
             cursor = connection.cursor()
-            query = "SELECT id, name, description, deadline FROM tasks WHERE list_id = %s ORDER BY id"
+            query = "SELECT id, name, description, deadline, status, assign, location " \
+                    "FROM tasks WHERE list_id = %s ORDER BY id"
             cursor.execute(query, (list_key,))
-            for task_key, name, description, deadline in cursor:
-                tasks.append((task_key, Task(name, description=description, deadline=deadline)))
+            for task_key, name, description, deadline, status, assign, location in cursor:
+                tasks.append((task_key, Task(name, description=description, deadline=deadline,
+                                             status=status, assign=assign, location=location)))
         return tasks
 
     def is_username_taken(self, username):

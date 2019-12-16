@@ -57,7 +57,10 @@ def task_add_page():
         name = form.data["name"]
         description = form.data["description"]
         deadline = form.data["deadline"]
-        task = Task(name, description=description, deadline=deadline)
+        status = form.data["status"]
+        assign = form.data["assign"]
+        location = form.data["location"]
+        task = Task(name, description=description, deadline=deadline, status=status, assign=assign, location=location)
         db = current_app.config["db"]
         task_key = db.add_task(task)
         db.add_task_user_relation(task_key, current_user.username)
@@ -87,7 +90,11 @@ def task_edit_page(task_key):
             name = form.data["name"]
             description = form.data["description"]
             deadline = form.data["deadline"]
-            task = Task(name, description=description, deadline=deadline)
+            status = form.data["status"]
+            assign = form.data["assign"]
+            location = form.data["location"]
+            task = Task(name, description=description, deadline=deadline,
+                        status=status, assign=assign, location=location)
             db.update_task(task_key, task)
         flash("Task data updated.")
         if current_user.username not in share:
@@ -96,6 +103,9 @@ def task_edit_page(task_key):
     form.name.data = task.name
     form.description.data = task.description if task.description else ""
     form.deadline.data = task.deadline if task.deadline else ""
+    form.status.data = task.status if task.status else ""
+    form.assign.data = task.assign if task.assign else ""
+    form.location.data = task.location if task.location else ""
     task_share = db.get_task_share(task_key)
     if len(task_share) < 1:
         task_share = None
@@ -195,7 +205,11 @@ def list_new_task_page(list_key):
         name = form.data["name"]
         description = form.data["description"]
         deadline = form.data["deadline"]
-        task = Task(name, description=description, list_id=list_key, deadline=deadline)
+        status = form.data["status"]
+        assign = form.data["assign"]
+        location = form.data["location"]
+        task = Task(name, description=description, deadline=deadline, status=status, assign=assign,
+                    location=location, list_id=list_key)
         db = current_app.config["db"]
         task_key = db.add_task_with_list(task)
         db.add_task_user_relation(task_key, current_user.username)

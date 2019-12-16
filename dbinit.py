@@ -13,6 +13,9 @@ INIT_STATEMENTS = [
     "name VARCHAR(80) NOT NULL,"
     "description VARCHAR(80),"
     "deadline DATE,"
+    "status INTEGER NOT NULL,"
+    "assign VARCHAR(80),"
+    "location VARCHAR(80),"
     "list_id INTEGER REFERENCES lists(id) ON DELETE CASCADE"
     ")",
     "CREATE TABLE IF NOT EXISTS users("

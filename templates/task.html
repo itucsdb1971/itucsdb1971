@@ -20,6 +20,29 @@
         <td>{{ task.deadline }}</td>
       </tr>
       {% endif %}
+      {% if task.status is not none %}
+      <tr>
+        <th>Status:</th>
+        <td>{% if task.status == 0 %}To do
+            {% elif task.status == 1 %}Done
+            {% elif task.status == 2 %}In progress
+            {% elif task.status == 3 %}Stopped
+            {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% if task.assign %}
+      <tr>
+        <th>Assign:</th>
+        <td>{{ task.assign }}</td>
+      </tr>
+      {% endif %}
+      {% if task.location %}
+      <tr>
+        <th>Location:</th>
+        <td>{{ task.location }}</td>
+      </tr>
+      {% endif %}
       {% if task_share %}
       <tr>
         <th>Shared:</th>

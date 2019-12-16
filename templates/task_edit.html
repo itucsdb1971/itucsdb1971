@@ -46,6 +46,50 @@
         {% endfor %}
       </div>
 
+      <div class="field">
+        <label for="status" class="label">Status</label>
+        <div class="control">
+          {{ form.status(class='input is-hidden') }}
+          <div class="select is-rounded">
+            <select id="selectStatus" onChange='document.getElementById("status").value = this.value'>
+              <option value=0>To do</option>
+              <option value=1>Done</option>
+              <option value=2>In progress</option>
+              <option value=3>Stopped</option>
+            </select>
+          </div>
+        </div>
+        {% for error in form.status.errors %}
+        <p class="help has-background-warning">
+            {{ error }}
+        </p>
+        {% endfor %}
+      </div>
+
+      <div class="field">
+        <label for="assign" class="label">Assign (Optional)</label>
+        <div class="control">
+          {{ form.assign(class='input') }}
+        </div>
+        {% for error in form.assign.errors %}
+        <p class="help has-background-warning">
+            {{ error }}
+        </p>
+        {% endfor %}
+      </div>
+
+      <div class="field">
+        <label for="location" class="label">Location (Optional)</label>
+        <div class="control">
+          {{ form.location(class='input') }}
+        </div>
+        {% for error in form.location.errors %}
+        <p class="help has-background-warning">
+            {{ error }}
+        </p>
+        {% endfor %}
+      </div>
+
       <div id="shareDiv" class="field">
         <label for="share" class="label">Share (Optional)</label>
         {% for error in form.share.errors %}
@@ -55,7 +99,7 @@
         {% endfor %}
         <div class="field has-addons">
           <div class="control">
-            {{ form.share(class='input is-hidden') }}
+            {{ form.share(class='input is-hidden', value=0) }}
             <input id="shareInput" type="text" class="input">
           </div>
           <div onclick="appendItem()" class="control">
@@ -98,6 +142,14 @@
       document.getElementById('share').value = "";
 
       $(document).ready(function(){
+        var status = document.getElementById('status').value;
+        if (status) {
+          $("#selectStatus").val(status);
+        } else {
+          $("#selectStatus").val(0);
+          $("#status").val(0);
+        }
+
         var usernames = document.getElementsByName('username');
         for (i = 0; i < usernames.length; i++) {
           document.getElementById('share').value += usernames[i].value + ",";
