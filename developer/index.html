@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Developer Guide &mdash; itucsdb1971  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> itucsdb1971
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Developer Guide</a><ul>
+<li><a class="reference internal" href="#database-design">Database Design</a></li>
+<li><a class="reference internal" href="#code-structure">Code Structure</a><ul>
+<li><a class="reference internal" href="#all-parts-implemented-by-emre-horsanali">All Parts Implemented by Emre HORSANALI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">itucsdb1971</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Developer Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developer/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="developer-guide">
+<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="database-design">
+<h2>Database Design<a class="headerlink" href="#database-design" title="Permalink to this headline">¶</a></h2>
+<p>There are 3 main tables (users, tasks, lists) and 2 additional tables
+(list_user_relations, task_user_relations) that holds the relations between
+main tables.</p>
+<p>E/R Diagram:</p>
+<blockquote>
+<div><div class="figure align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/dbdiagram.png"><img alt="E/R Diagram" src="../_images/dbdiagram.png" style="width: 1442.0px; height: 582.0px;" /></a>
+<p class="caption"><span class="caption-text">E/R Diagram</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+</div></blockquote>
+<p>Optional fields showed as “NULL” in E/R Diagram. Others are necessary.</p>
+<p>A task in “tasks” table contains information for a task such as description,
+status etc.</p>
+<p>Creating a list is way of organizing multiple tasks. Lists have a name and
+description (optional) which are going to be held in “lists” table.</p>
+<p>A task inside “tasks” table has a foreign key to “lists” table in its
+“list_id” column, if it is in a list.</p>
+<p>Information about which users can see specific tasks or lists is in
+“list_user_relations” and “task_user_relations” tables. These tables only
+has 2 foreign key fields and an id.</p>
+</div>
+<div class="section" id="code-structure">
+<h2>Code Structure<a class="headerlink" href="#code-structure" title="Permalink to this headline">¶</a></h2>
+<p>All initial statements for a creating a database like this is inside
+“dbinit.py” file and these statements gets executed every time server runs.
+Mentioned initial statements are below:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">INIT_STATEMENTS</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&quot;CREATE TABLE IF NOT EXISTS lists (&quot;</span>
+  <span class="s2">&quot;id SERIAL PRIMARY KEY,&quot;</span>
+  <span class="s2">&quot;name VARCHAR(80) NOT NULL,&quot;</span>
+  <span class="s2">&quot;description VARCHAR(80)&quot;</span>
+  <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;CREATE TABLE IF NOT EXISTS tasks (&quot;</span>
+  <span class="s2">&quot;id SERIAL PRIMARY KEY,&quot;</span>
+  <span class="s2">&quot;name VARCHAR(80) NOT NULL,&quot;</span>
+  <span class="s2">&quot;description VARCHAR(80),&quot;</span>
+  <span class="s2">&quot;deadline DATE,&quot;</span>
+  <span class="s2">&quot;status INTEGER NOT NULL,&quot;</span>
+  <span class="s2">&quot;assign VARCHAR(80),&quot;</span>
+  <span class="s2">&quot;location VARCHAR(80),&quot;</span>
+  <span class="s2">&quot;list_id INTEGER REFERENCES lists(id) ON DELETE CASCADE&quot;</span>
+  <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;CREATE TABLE IF NOT EXISTS users(&quot;</span>
+  <span class="s2">&quot;name VARCHAR(80) PRIMARY KEY,&quot;</span>
+  <span class="s2">&quot;password TEXT NOT NULL&quot;</span>
+  <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;CREATE TABLE IF NOT EXISTS task_user_relations (&quot;</span>
+  <span class="s2">&quot;id SERIAL PRIMARY KEY,&quot;</span>
+  <span class="s2">&quot;task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,&quot;</span>
+  <span class="s2">&quot;username VARCHAR(80) NOT NULL REFERENCES users(name) ON DELETE CASCADE&quot;</span>
+  <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;CREATE TABLE IF NOT EXISTS list_user_relations (&quot;</span>
+  <span class="s2">&quot;id SERIAL PRIMARY KEY,&quot;</span>
+  <span class="s2">&quot;list_id INTEGER NOT NULL REFERENCES lists(id) ON DELETE CASCADE,&quot;</span>
+  <span class="s2">&quot;username VARCHAR(80) NOT NULL REFERENCES users(name) ON DELETE CASCADE&quot;</span>
+  <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+ <span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>There 2 different configs in “settings.py” file and if flask environment is
+“production”, “ProductionConfig” gets activated which gets “DATABASE_URL”
+from environment variables from Heroku for ElephantSQL otherwise
+“DevelopmentConfig” gets activated which sets “DATABASE_URL” to
+“postgres://postgres:docker&#64;localhost:5432/postgres” for development on
+local with Docker PostgreSQL.</p>
+<p>All database related functions are inside “database.py”.</p>
+<div class="section" id="all-parts-implemented-by-emre-horsanali">
+<h3>All Parts Implemented by Emre HORSANALI<a class="headerlink" href="#all-parts-implemented-by-emre-horsanali" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, itucsdb1971
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
