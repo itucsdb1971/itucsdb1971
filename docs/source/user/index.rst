@@ -1,22 +1,60 @@
 User Guide
 ==========
 
-**explain how your application works from the user perspective, use
-screenshots whereever appropriate**
+Login Page
+----------
 
-**to add a picture, use the following example**::
-
-   .. figure:: picture.png
+   .. figure:: images/login.png
       :scale: 50 %
-      :alt: map to buried treasure
+      :alt: Login page
 
-      This is the caption of the figure (a simple paragraph).
+      Login page
 
-.. toctree::
+Tasks Page
+----------
 
-   member1
-   member2
-   member3
-   member4
-   member5
-   
+   .. figure:: images/tasks.png
+      :scale: 50 %
+      :alt: Tasks page
+
+      Tasks page
+
+Task Edit Page
+--------------
+
+   .. figure:: images/edittask.png
+      :scale: 50 %
+      :alt: Task Edit page
+
+      Task Edit page
+
+Task Detail Page
+----------------
+
+   .. figure:: images/taskdetail.png
+      :scale: 50 %
+      :alt: Task Detail page
+
+      Task Detail page
+
+Lists Page
+----------
+
+   .. figure:: images/lists.png
+      :scale: 50 %
+      :alt: Lists page
+
+      Lists page
+
+List Detail Page
+----------------
+
+   .. figure:: images/listdetail.png
+      :scale: 50 %
+      :alt: List Detail page
+
+      List Detail page
+
+---------------------------------------
+All Parts Implemented by Emre HORSANALI
+---------------------------------------

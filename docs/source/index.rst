@@ -1,22 +1,10 @@
-Welcome to itucsdbNN's documentation!
+Welcome to itucsdb1971's documentation!
 =====================================
 
-:Team: Team Name
+:Team: itucsdb1971
 
 :Members:
 
-   * Member 1
-   * Member 2
-   * Member 3
-   * Member 4
-   * Member 5
+   * Emre HORSANALI
 
-**project description goes here (a few paragraphs)**
-
-Contents:
-
-.. toctree::
-   :maxdepth: 1
-
-   user/index
-   developer/index
+Simple To-Do App.
